@@ -51,7 +51,6 @@ with st.container(border=True) as container :
 """)
     st.markdown("")
 
-print(st.session_state["search_method"])
 if prompt := st.chat_input("What is up?"):
     with st.chat_message("user"):
         prompt
