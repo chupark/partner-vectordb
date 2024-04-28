@@ -1,9 +1,14 @@
 # NCP 파트너 세미나 - VectorDB
 NCP 파트너 세미나 Vector DB의 HoL 자료 입니다.
 
-## 테스트 완료된 환경
+## 공통
+### 테스트 완료된 환경
 - 운영체제 : 리눅스
 - 파이썬 버전 : python3.8 이상
+
+<br>
+
+# OpenSearch 실습
 
 ## 설치 방법
 
@@ -86,7 +91,7 @@ create index 메뉴에서 아래 기능을 수행할 수 있습니다.
 - index_name : 인덱스 이름
 - embedding_model_name : 임베딩 모델 이름
   - 기본적으로 HyperClova X의 임베딩 모델을 사용합니다.
-  - s`treamlit_chat/modules/OpenSearch.py` 파일의 `text_to_vector method`s를 수정하여 커스텀 임베딩 모델을 사용할 수 있습니다.
+  - `streamlit_chat/modules/OpenSearch.py` 파일의 `text_to_vector method`s를 수정하여 커스텀 임베딩 모델을 사용할 수 있습니다.
 
 #### 인덱스 생성
 붉은색 `Index 생성하기` 버튼을 클릭하면 인덱스를 생성합니다.
@@ -105,18 +110,37 @@ create index 메뉴에서 아래 기능을 수행할 수 있습니다.
 - 데이터를 검색합니다. 최대 검색 수는 15개 입니다.
 - index를 선택하고 해당 인덱스의 데이터를 쿼리합니다.
 
-#### Normal_Search
-일반적인 벡터 검색을 수행합니다.
+#### Normal_Vector_Search
+- 일반적인 벡터 검색을 수행합니다.
+- 벡터화된 Column은 `starcraft2.csv`파일의 `Completion` Column입니다.
 
 #### Hybrid_Search
-OpenSearch 내부의 SearchPipeline을 사용하여 하이브리드 검색을 수행합니다.
-- 질문, 답변, 벡터를 조합하여 쿼리합니다.
+- OpenSearch 내부의 SearchPipeline을 사용하여 하이브리드 검색을 수행합니다.
+- `starcraft2.csv` 파일의 `Text` Column을 `Completion` Column, 벡터화된 `Completion` Column을 사용한 하이브리드 검색 입니다.
+
+#### Question_Hybrid_Search
+- `starcraft2.csv` 파일의 `Text` Column을 벡터화된 `Completion` Column을 사용한 하이브리드 검색 입니다.
+
+#### Completion_Hybrid_Search
+- `starcraft2.csv` 파일의 `Completion` Column을 벡터화된 `Completion` Column을 사용한 하이브리드 검색 입니다.
 
 #### Question_Text_Search
-텍스트 검색을 수행합니다. 질문 column을 사용합니다.
+- 텍스트 검색을 수행합니다. `starcraft2.csv` 파일의 `Text` Column을 사용합니다.
 
 #### Completion_Text_Search
-텍스트 검색을 수행합니다. 답변 column을 사용합니다.
+- 텍스트 검색을 수행합니다. `starcraft2.csv` 파일의 `Completion` Column을 사용합니다.
 
 ### 검색 결과
 ![alt text](images/search_result.png)
+
+<br>
+
+# VectorDB Benchmark
+![alt text](images/vdb_bench.png)
+
+## 설치 방법
+소스코드 다운 : https://github.com/chupark/vector-db-bench  
+설치법링크 참조 : https://github.com/zilliztech/VectorDBBench
+
+## 사용 방법
+사용법 링크 참조 https://github.com/zilliztech/VectorDBBench
