@@ -144,3 +144,19 @@ create index 메뉴에서 아래 기능을 수행할 수 있습니다.
 
 ## 사용 방법
 사용법 링크 참조 https://github.com/zilliztech/VectorDBBench
+
+<br>
+
+### 인덱스 및 컬렉션 영구 저장시
+인덱스 및 컬렉션 등 벡터 데이터 저장소를 영구저장하면 오래 걸리는 데이터 적재 작업을 생략할 수 있습니다.
+`vectordb_bench/backend/clients/\<Your-DB>/\<Your-DB>.py`파일의 내용을 직접 수정해야합니다.
+
+<br>
+
+#### Milvus 예시
+![alt text](images/milvus_collection.png)
+
+<br>
+
+#### OpenSearch 예시
+![alt text](images/opensearch_index.png)
