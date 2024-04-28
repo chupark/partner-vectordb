@@ -6,8 +6,8 @@ import logging
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-# opensearch_logger = logging.getLogger("opensearch")
-# opensearch_logger.setLevel(logging.WARN)
+opensearch_logger = logging.getLogger("opensearch")
+opensearch_logger.setLevel(logging.WARN)
 
 from modules.HyperClovaX import HyperClovaX
 
@@ -175,7 +175,7 @@ class OpenSearchHelper():
         return search_result_dict
     
 
-    def hybrid_search(self, text, model_name, index) -> dict:
+    def hybrid_search(self, text, model_name, index, session_state) -> dict:
         vector = self.text_to_vector(text=text, model_name=model_name)
         search_body = {
             "size": 15,
@@ -211,7 +211,7 @@ class OpenSearchHelper():
                     }
                 ]
                 }
-            },"size":10,
+            },
             "search_pipeline" : {
                 "phase_results_processors": [
                 {
@@ -223,9 +223,135 @@ class OpenSearchHelper():
                         "technique": "arithmetic_mean",
                         "parameters": {
                         "weights": [
-                            0.2,
-                            0.1,
-                            0.7
+                            session_state["weight1"],
+                            session_state["weight2"],
+                            session_state["weight3"]
+                        ]
+                        }
+                    }
+                    }
+                }
+                ]
+            }
+            }
+        search_result = self.client.search(index=index, body=search_body)
+        _score_list = []
+        origin_text_list = []
+        origin_question = []
+        for s in search_result["hits"]["hits"]:
+            _score_list.append(s['_score'])
+            origin_question.append(s['_source']['origin-question'])
+            origin_text_list.append(s['_source']['origin-text'])
+        search_result_dict = {"score": _score_list, "origin-question": origin_question, "origin-text": origin_text_list}
+        return search_result_dict
+    
+
+    def completion_hybrid_search(self, text, model_name, index, session_state) -> dict:
+        vector = self.text_to_vector(text=text, model_name=model_name)
+        search_body = {
+            "size": 15,
+            "_source": {
+                "exclude": [
+                "vector"
+                ]
+            },
+            "query": {
+                "hybrid": {
+                "queries": [
+                    {
+                    "match": {
+                        "origin_text": {
+                        "query": text
+                        }
+                    }
+                    },
+                    {
+                    "knn": {
+                        "vector": {
+                        "vector": vector,
+                        "k": 15
+                        }
+                    }
+                    }
+                ]
+                }
+            },
+            "search_pipeline" : {
+                "phase_results_processors": [
+                {
+                    "normalization-processor": {
+                    "normalization": {
+                        "technique": "min_max"
+                    },
+                    "combination": {
+                        "technique": "arithmetic_mean",
+                        "parameters": {
+                        "weights": [
+                            session_state["weight2"],
+                            session_state["weight3"]
+                        ]
+                        }
+                    }
+                    }
+                }
+                ]
+            }
+            }
+        search_result = self.client.search(index=index, body=search_body)
+        _score_list = []
+        origin_text_list = []
+        origin_question = []
+        for s in search_result["hits"]["hits"]:
+            _score_list.append(s['_score'])
+            origin_question.append(s['_source']['origin-question'])
+            origin_text_list.append(s['_source']['origin-text'])
+        search_result_dict = {"score": _score_list, "origin-question": origin_question, "origin-text": origin_text_list}
+        return search_result_dict
+    
+
+    def question_hybrid_search(self, text, model_name, index, session_state) -> dict:
+        vector = self.text_to_vector(text=text, model_name=model_name)
+        search_body = {
+            "size": 15,
+            "_source": {
+                "exclude": [
+                "vector"
+                ]
+            },
+            "query": {
+                "hybrid": {
+                "queries": [
+                    {
+                    "match": {
+                        "origin-question": {
+                        "query": text
+                        }
+                    }
+                    },
+                    {
+                    "knn": {
+                        "vector": {
+                        "vector": vector,
+                        "k": 15
+                        }
+                    }
+                    }
+                ]
+                }
+            },
+            "search_pipeline" : {
+                "phase_results_processors": [
+                {
+                    "normalization-processor": {
+                    "normalization": {
+                        "technique": "min_max"
+                    },
+                    "combination": {
+                        "technique": "arithmetic_mean",
+                        "parameters": {
+                        "weights": [
+                            session_state["weight1"],
+                            session_state["weight3"]
                         ]
                         }
                     }
@@ -303,7 +429,9 @@ class ExtendedEnum(Enum):
         return [c.value for c in cls]
 
 class HNSW_Search(ExtendedEnum):
-    NORMAL_SEARCH = "Normal_Search"
+    NORMAL_SEARCH = "Normal_Vector_Search"
     HYBRID_SEARCH = "Hybrid_Search"
+    HYBRID_SEARCH_QUESTION = "Question_Hybrid_Search"
+    HYBRID_SEARCH_COMPLETION = "Completion_Hybrid_Search"
     TEXT_SEARCH_QUESTION = "Question_Text_Search"
     TEXT_SEARCH_COMPLETION = "Completion_Text_Search"
