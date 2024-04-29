@@ -72,7 +72,6 @@ elif st.session_state["search_method"] == HNSW_Search.HYBRID_SEARCH_COMPLETION.v
 st.session_state["embedding_model"] = ""
 
 with st.container(border=True) as container :
-    st.write("This is inside the container")
     selected_index = st.session_state['indices'][st.session_state["search_index"]]
     if selected_index['mappings']['properties']['vector']['type'] != "knn_vector":
         None
