@@ -5,9 +5,9 @@ st.set_page_config(
     page_icon="👋",
 )
 
-st.write("# Welcome to Streamlit! 👋")
+st.write("# 네이버클라우드 파트너 테크밋업 👋")
 
-st.sidebar.success("Select a demo above.")
+st.sidebar.success("데모를 골라주세요")
 
 st.markdown(
     """
