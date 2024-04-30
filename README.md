@@ -85,7 +85,9 @@ export OSH_PW=""
 streamlit run main.py
 ```
 
-### Streamlit 실행시 에러가 발생할 경우
+### Streamlit 실행시 아래 에러가 발생할 경우
+
+![alt text](images/streamlit-error.png)
 
 #### 옵션 1
 아래 코드를 bash쉘에서 실행
@@ -105,7 +107,6 @@ sudo sysctl -p
 ```
 
 #### 옵션 2
-![alt text](images/streamlit-error.png)
 아래 코드로 실행
 ```bash
 streamlit run main.py --server.fileWatcherType none
