@@ -67,6 +67,10 @@ streamlit run main.py
 
 #### Streamlit 실행시 에러가 발생할 경우
 ![alt text](images/streamlit-error.png)
+아래 코드로 실행
+```bash
+streamlit run main.py --server.fileWatcherType none
+```
 
 <br>
 
