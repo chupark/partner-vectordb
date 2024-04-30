@@ -65,12 +65,35 @@ export OSH_PW=""
 streamlit run main.py
 ```
 
-#### Streamlit 실행시 에러가 발생할 경우
+### Streamlit 실행시 에러가 발생할 경우
+
+#### 옵션 1
+아래 코드를 bash쉘에서 실행
+```bash
+### Debian 계열 리눅스일 경우
+sudo apt-get install gvfs libglib2.0-bin
+
+### cat /proc/sys/fs/inotify/max_user_watches 파라미터 확인
+
+sudo vi /etc/sysctl.conf
+
+### 아래 내용을 맨 아래 줄에 추가
+fs.inotify.max_user_watches=524288
+
+### 아래 명령어 실행
+sudo sysctl -p
+```
+
+#### 옵션 2
 ![alt text](images/streamlit-error.png)
 아래 코드로 실행
 ```bash
 streamlit run main.py --server.fileWatcherType none
 ```
+
+#### 옵션 3
+아래 링크에서 조치사항 적용
+- https://code.visualstudio.com/docs/setup/linux#_conflicts-with-vs-code-packages-from-other-repositories
 
 <br>
 
