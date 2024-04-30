@@ -10,17 +10,22 @@ NCP 파트너 세미나 Vector DB의 HoL 자료 입니다.
 - 운영체제 : 리눅스
 - 파이썬 버전 : python3.8 이상
 
+<br>
+
+### 제공되는 기능
+1. [OpenSearch 실습](#OpenSearch-실습)
+1. [OVectorDB Benchmark](#VectorDB-Benchmark)
+
+<br>
+
+# OpenSearch 실습
+
 ### 사용 가능 임베딩 모델
 | 환경           | 모델명             | 차원   | 유사도 측정 방식 |
 | :------------ | :--------------- | :---- | :----------- |
 | HCX           | clir_sts_dolphin | 1024  | cosine       |
 | HCX           | clir_emb_dolphin | 1024  | L2           |
 | 커스텀(허깅페이스) | bge-m3           | 1024  | cosine       |
-
-
-<br>
-
-# OpenSearch 실습
 
 ## 설치 방법
 
