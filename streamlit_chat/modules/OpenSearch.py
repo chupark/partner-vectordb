@@ -3,6 +3,8 @@ from enum import Enum
 import config
 import pandas as pd
 import logging
+from modules.EmbeddingModel import EmbeddingModels
+from modules.EmbeddingModel import BGME3_EMB
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -100,31 +102,23 @@ class OpenSearchHelper():
         origin_question = []
         origin_text = []
         embedding_text = []
+        model_name = session_state['embedding_model_name']
 
-        if self.embedding_model_ncp == True:
-            model_name = session_state['embedding_model_name']
-            hcx = HyperClovaX(clova_studio_api_key = self.clova_studio_api_key, apigw_api_key = self.apigw_api_key)
-            hcx.set_embedding(app_id=self.emb_appId, model_name=model_name)
-            for idx, line in df_csv.iterrows():
-                logger.info(f"\x1b[32m embedding {idx + 1} / {len(df_csv['Completion'])}")
-                
-                res = hcx.embedding(text = line['Completion'])
+        for idx, line in df_csv.iterrows():
+            logger.info(f"\x1b[32m embedding {idx + 1} / {len(df_csv['Completion'])}")
+            res_vector = self.text_to_vector(text=line['Completion'], model_name=model_name)
+            if res_vector != []:
+                embedding_text.append(res_vector)
                 origin_question.append(line['Text'])
                 origin_text.append(line['Completion'])
-                if res.status_code == 200:
-                    embedding_result = res.json()['result']['embedding']
-                    embedding_text.append(embedding_result)
-                else:
-                    logger.error(f"\x1b[31m {line['Completion']}")
-        else:
-            ## Your Custom Embedding Model Here
-            None
+            else:
+                None
+
 
         if len(origin_text) == len(embedding_text):
             dt_dict = {'origin-question': origin_question, 'origin_text': origin_text, 'embedding_text': embedding_text}
             df_final = pd.DataFrame(dt_dict)
-        
-        self.bulk_insert(data=df_final, index=index)
+            self.bulk_insert(data=df_final, index=index)
 
 
     def bulk_insert(self, data, index) -> None :
@@ -137,13 +131,23 @@ class OpenSearchHelper():
         self.client.bulk(datas)
 
     def text_to_vector(self, text, model_name) -> list:
-        hcx = HyperClovaX(clova_studio_api_key = self.clova_studio_api_key, apigw_api_key = self.apigw_api_key)
-        hcx.set_embedding(app_id=self.emb_appId, model_name=model_name)
-        res = hcx.embedding(text=text)
-        if res.status_code == 200 :
-            return res.json()['result']['embedding']
-        else:
-            return []
+        if model_name in [EmbeddingModels.HCX_STS_DOLPHIN.value, EmbeddingModels.HCX_EMB_DOLPHIN.value]:
+            hcx = HyperClovaX(clova_studio_api_key = self.clova_studio_api_key, apigw_api_key = self.apigw_api_key)
+            hcx.set_embedding(app_id=self.emb_appId, model_name=model_name)
+            res = hcx.embedding(text=text)
+
+            if res.status_code == 200 :
+                return res.json()['result']['embedding']
+            else:
+                logger.error(f"\x1b[31m text_to_vector_ERROR")
+                return []
+        elif model_name in [EmbeddingModels.BGE_M3.value]:
+            bgme3_model = BGME3_EMB(encoding=model_name)
+            res = bgme3_model.do_embeding(text=text)
+            return res
+            
+
+        
 
     def normal_search(self, text, model_name, index) -> dict:
         vector = self.text_to_vector(text=text, model_name=model_name)

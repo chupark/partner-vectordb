@@ -1,6 +1,7 @@
 import streamlit as st
 
 from modules.OpenSearch import OpenSearchHelper
+from modules.EmbeddingModel import EmbeddingModels
 
 def refresh():
     st.rerun()
@@ -47,9 +48,9 @@ st.session_state["index_name"] = st.sidebar.text_input(
     value=f"sc2-vector"
 )
 
-st.session_state["embedding_model_name"] = st.sidebar.text_input(
+st.session_state["embedding_model_name"] = st.sidebar.selectbox(
     label="embedding_model_name",
-    value="clir-sts-dolphin"
+    options=tuple(EmbeddingModels.list())
 )
 
 
