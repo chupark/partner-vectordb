@@ -1,7 +1,8 @@
-# NCP 파트너 세미나 - VectorDB
-NCP 파트너 세미나 Vector DB의 HoL 자료 입니다.  
+# Naver Cloud Platform 파트너 세미나 - VectorDB
+Naver Cloud Platform 파트너 세미나 Vector DB의 HoL 자료 입니다.  
 지속적으로 관심을 가지고 업데이트 예정 입니다.
 - 업데이트 예정 기능및 현재 기능상 이슈는, Issues를 참고해주세요
+> 주의 : 라이센스 정책에 따라 해당 데모 프로그램을 외부에 시연할 경우, "Naver Cloud Platform" 출처를 명시하셔야 합니다.
 
 <br>
 
