@@ -14,7 +14,7 @@ NCP 파트너 세미나 Vector DB의 HoL 자료 입니다.
 
 ### 제공되는 기능
 1. [OpenSearch 실습](#OpenSearch-실습)
-1. [OVectorDB Benchmark](#VectorDB-Benchmark)
+1. [VectorDB Benchmark](#VectorDB-Benchmark)
 
 <br>
 
